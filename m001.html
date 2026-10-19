@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>My Apps Hub</title>
+    <link rel="icon" type="image/png" href="logo-192.png">
+    
+    <!-- PWA Setup -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4F46E5">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Apps Hub">
+    <link rel="apple-touch-icon" href="logo-192.png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js', { scope: './' })
+            .then(reg => console.log('Hub Service Worker registered'))
+            .catch(err => console.error('Hub Service Worker failed', err));
+        });
+      }
+    </script>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --indigo:    #4F46E5;
+            --violet:    #7C3AED;
+            --slate-900: #0F172A;
+            --slate-800: #1E293B;
+            --slate-600: #475569;
+            --slate-400: #94A3B8;
+            --slate-200: #E2E8F0;
+            --slate-100: #F1F5F9;
+            --radius-sm: 10px;
+            --radius-lg: 24px;
+            --shadow-sm: 0 4px 12px rgba(15,23,42,0.06);
+            --shadow-md: 0 12px 24px rgba(15,23,42,0.1);
+            --shadow-violet: 0 8px 24px rgba(124,58,237,0.28);
+        }
+
+        html, body { height: 100%; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F0F4FF;
+            min-height: 100vh;
+            color: var(--slate-900);
+        }
+
+        button { font: inherit; }
+
+        /* ══ LOGIN SCREEN (Matches Reminder App) ══ */
+        .login-overlay {
+            position: fixed; inset: 0;
+            background: linear-gradient(160deg, var(--indigo) 0%, var(--violet) 50%, #9333EA 100%);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999; padding: 24px;
+        }
+        .login-card {
+            background: rgba(255,255,255,0.97);
+            border-radius: var(--radius-lg); padding: 40px 32px;
+            width: 100%; max-width: 380px; text-align: center;
+            box-shadow: 0 32px 64px rgba(0,0,0,0.22);
+            animation: loginPop 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
+        @keyframes loginPop { from { opacity:0; transform:scale(0.92) translateY(16px); } to { opacity:1; transform:scale(1) translateY(0); } }
+        
+        .login-logo {
+            width: 64px; height: 64px; border-radius: 20px;
+            background: linear-gradient(135deg, var(--indigo), var(--violet));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px; margin: 0 auto 20px; box-shadow: var(--shadow-violet);
+        }
+        .login-card h2 {
+            font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: 700;
+            color: var(--slate-900); margin-bottom: 6px;
+        }
+        .login-card p { font-size: 0.85rem; color: var(--slate-600); margin-bottom: 28px; }
+        .login-error {
+            display: none; background: #FEF2F2; color: #DC2626;
+            padding: 12px 14px; border-radius: var(--radius-sm);
+            margin-bottom: 20px; font-size: 0.85rem; font-weight: 600;
+            border-left: 3px solid #DC2626; text-align: left;
+        }
+
+        .btn-login {
+            width: 100%; padding: 14px; margin-top: 4px;
+            background: #ffffff; color: #3c4043; border: 1.5px solid var(--slate-200);
+            border-radius: var(--radius-sm); font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            box-shadow: var(--shadow-sm); transition: all 0.2s ease;
+        }
+        .btn-login:hover:not(:disabled) { background: var(--slate-100); transform: translateY(-1px); }
+        .btn-login:disabled { opacity: 0.65; cursor: not-allowed; }
+
+        /* ══ MAIN HUB ══ */
+        .app-shell { display: none; padding-bottom: 60px; }
+        .app-shell.visible { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Hub Header */
+        .hub-header {
+            background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
+            padding: 48px 24px 60px; position: relative; overflow: hidden;
+            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
+            box-shadow: var(--shadow-violet); margin-bottom: -30px;
+        }
+        .hub-header::before, .hub-header::after {
+            content: ''; position: absolute; border-radius: 50%; background: rgba(255,255,255,0.08);
+        }
+        .hub-header::before { width: 250px; height: 250px; top: -80px; right: -50px; }
+        .hub-header::after  { width: 120px; height: 120px; bottom: -20px; left: -20px; }
+        
+        .header-inner {
+            display: flex; align-items: center; justify-content: space-between;
+            position: relative; z-index: 1; max-width: 900px; margin: 0 auto;
+        }
+        .header-title { font-family: 'Poppins', sans-serif; font-size: 1.6rem; font-weight: 700; color: #fff; }
+        .header-sub { font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-top: 2px; }
+        
+        .btn-logout {
+            width: 44px; height: 44px; border-radius: 14px;
+            background: rgba(255,255,255,0.15); border: none; cursor: pointer;
+            font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+            color: #fff; transition: background 0.2s; backdrop-filter: blur(8px);
+        }
+        .btn-logout:hover { background: rgba(255,255,255,0.25); }
+
+        /* Grid Layout */
+        .hub-container {
+            max-width: 900px; margin: 0 auto; padding: 0 20px;
+            position: relative; z-index: 2;
+        }
+        .apps-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 16px; margin-top: 10px;
+        }
+
+        /* App Cards */
+        .app-card {
+            background: #fff; border-radius: 20px; padding: 24px 16px;
+            text-align: center; text-decoration: none; color: var(--slate-800);
+            box-shadow: var(--shadow-sm); display: flex; flex-direction: column;
+            align-items: center; gap: 12px; border: 2px solid transparent;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        }
+        .app-card:hover {
+            transform: translateY(-4px); box-shadow: var(--shadow-md);
+            border-color: var(--indigo);
+        }
+        .app-icon-wrap {
+            width: 60px; height: 60px; border-radius: 16px;
+            background: var(--slate-100); display: flex; align-items: center;
+            justify-content: center; font-size: 32px; overflow: hidden;
+        }
+        .app-icon-img { width: 100%; height: 100%; object-fit: cover; }
+        .app-name {
+            font-family: 'Poppins', sans-serif; font-size: 0.85rem;
+            font-weight: 600; line-height: 1.2;
+        }
+
+        @media (min-width: 600px) {
+            .apps-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+            .app-card { padding: 32px 20px; }
+            .app-icon-wrap { width: 72px; height: 72px; font-size: 38px; }
+            .app-name { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="loginOverlay" class="login-overlay">
+    <div class="login-card">
+        <div class="login-logo">🚀</div>
+        <h2>Apps Hub</h2>
+        <p>Sign in to access your tools</p>
+        <div id="loginError" class="login-error"></div>
+        <button type="button" id="googleLoginBtn" class="btn-login" onclick="window.handleGoogleLogin()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo" style="width: 20px; height: 20px;">
+            Sign in with Google
+        </button>
+    </div>
+</div>
+
+<!-- ══ MAIN HUB ══ -->
+<div class="app-shell" id="appShell">
+    <div class="hub-header">
+        <div class="header-inner">
+            <div>
+                <div class="header-title">Welcome Back 👋</div>
+                <div class="header-sub">Select an app to continue</div>
+            </div>
+            <button class="btn-logout" onclick="window.logout()" title="Sign Out">🚪</button>
+        </div>
+    </div>
+
+    <div class="hub-container">
+        <!-- Apps are dynamically injected here -->
+        <div class="apps-grid" id="appsGrid"></div>
+    </div>
+</div>
+
+<!-- ══ FIREBASE LOGIC ══ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// 🚨 REPLACE WITH YOUR ACTUAL FIREBASE CONFIG
+const firebaseConfig = {
+    apiKey: "AIzaSyAc46X6MIXI-moZ2oTy2ShiDv6IrjhVQC4",
+    authDomain: "finance-app-23309.firebaseapp.com",
+    projectId: "finance-app-23309",
+    // ... add any other missing config parameters here
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// ==========================================
+// CENTRALIZED APPS LIST
+// ==========================================
+// To add a new app, simply copy a line and add your new URL and Icon/Emoji.
+// If you don't have a logo-512.png image file for an app yet, it will fall back to displaying the emoji!
+const APPS = [
+    { name: "Pitaka Wallet",      url: "https://akumeus04.github.io/pitaka-wallet/#dashboard", icon: "logo-192.png", emoji: "👛" },
+    { name: "Reminder",           url: "https://akumeus04.github.io/Tools/Reminder",           icon: "logo-192.png", emoji: "🚨" },
+    { name: "Car Loan Tracker",   url: "https://akumeus04.github.io/pitaka-wallet/car/car_loan", icon: "logo-192.png", emoji: "🚘" },
+    { name: "Happy Home Bills",   url: "https://akumeus04.github.io/HappyHomeBills/",          icon: "logo-192.png", emoji: "🏠" },
+    { name: "TimeIn - TimeOut",   url: "https://akumeus04.github.io/Tools/TimeIn-TimeOut",     icon: "logo-192.png", emoji: "⏱️" },
+    { name: "ToPDF & Merge",      url: "https://akumeus04.github.io/Tools/ToPDFnMerge",        icon: "logo-192.png", emoji: "📄" }
+];
+
+// Dynamically render the grid
+function renderGrid() {
+    const grid = document.getElementById('appsGrid');
+    grid.innerHTML = APPS.map(app => `
+        <a href="${app.url}" class="app-card">
+            <div class="app-icon-wrap">
+                <!-- Tries to load the image. If it fails or is missing, uses the emoji -->
+                <img src="${app.icon}" class="app-icon-img" alt="${app.name}" onerror="this.outerHTML='${app.emoji}'">
+            </div>
+            <div class="app-name">${app.name}</div>
+        </a>
+    `).join('');
+}
+
+// ==========================================
+// SECURITY & AUTH SETUP (SHA-256 RESTRICTED)
+// ==========================================
+
+// 🚨 Paste your 64-character SHA-256 email hash below (in lowercase)
+const ALLOWED_EMAIL_HASH = "24a8875545b9c0867169cc58a471fd522134a0c8ac795110f4111a9fbdae7d14";
+
+async function hashEmail(email) {
+    if (!email) return "";
+    const msgBuffer = new TextEncoder().encode(email.toLowerCase().trim());
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        const userHash = await hashEmail(user.email || "");
+
+        if (userHash !== ALLOWED_EMAIL_HASH) {
+            await signOut(auth);
+            const errDiv = document.getElementById('loginError');
+            if (errDiv) {
+                errDiv.textContent = "Access Denied: Account not authorized.";
+                errDiv.style.display = 'block';
+            }
+            return;
+        }
+
+        // ✅ Authorized user confirmed!
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('appShell').classList.add('visible');
+        
+        const errDiv = document.getElementById('loginError');
+        if (errDiv) errDiv.style.display = 'none';
+
+        // Render the apps grid
+        renderGrid();
+        
+    } else {
+        // 🔒 Signed Out State
+        document.getElementById('loginOverlay').style.display = 'flex';
+        document.getElementById('appShell').classList.remove('visible');
+    }
+});
+
+window.handleGoogleLogin = async function() {
+    const provider = new GoogleAuthProvider();
+    const btn = document.getElementById('googleLoginBtn');
+    const errDiv = document.getElementById('loginError');
+    
+    if (btn) {
+        btn.innerHTML = 'Verifying...'; 
+        btn.disabled = true; 
+    }
+    if (errDiv) errDiv.style.display = 'none';
+    
+    try { 
+        await signInWithPopup(auth, provider); 
+    } catch (error) { 
+        if (errDiv) {
+            errDiv.textContent = 'Authentication failed: ' + error.message; 
+            errDiv.style.display = 'block'; 
+        }
+        if (btn) {
+            btn.innerHTML = `<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width: 20px; height: 20px;"> Sign in with Google`;
+            btn.disabled = false;
+        }
+    }
+};
+
+window.logout = async function() {
+    try { await signOut(auth); } catch (e) { console.error(e); }
+};
+</script>
+
+</body>
+</html>
