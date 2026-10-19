@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>My Apps Hub</title>
-    <link rel="icon" type="image/png" href="logo-192.png">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
 
     <!-- PWA Setup -->
     <link rel="manifest" href="manifest.json">
@@ -397,12 +397,13 @@ const auth = getAuth(app);
 // CENTRALIZED APPS LIST
 // ==========================================
 const APPS = [
-    { name: "Pitaka Wallet",    url: "https://akumeus04.github.io/pitaka-wallet/#dashboard",   icon: "logo-192.png", emoji: "👛" },
-    { name: "Reminder",         url: "https://akumeus04.github.io/Tools/Reminder",             icon: "logo-192.png", emoji: "🚨" },
-    { name: "Car Loan Tracker", url: "https://akumeus04.github.io/pitaka-wallet/car/car_loan", icon: "logo-192.png", emoji: "🚘" },
-    { name: "Happy Home Bills", url: "https://akumeus04.github.io/HappyHomeBills/",            icon: "logo-192.png", emoji: "🏠" },
-    { name: "TimeIn - TimeOut", url: "https://akumeus04.github.io/Tools/TimeIn-TimeOut",       icon: "logo-192.png", emoji: "⏱️" },
-    { name: "ToPDF & Merge",    url: "https://akumeus04.github.io/Tools/ToPDFnMerge",          icon: "logo-192.png", emoji: "📄" }
+    { name: "Pitaka Wallet Desktop", url: "https://akumeus04.github.io/pitaka-wallet/#dashboard",   emoji: "👛" },
+	{ name: "Pitaka Wallet Mobile",  url: "https://akumeus04.github.io/pitaka-wallet/mobile.html#dashboard",   emoji: "👛" },
+    { name: "Reminder",         url: "https://akumeus04.github.io/Tools/Reminder",             emoji: "🚨" },
+    { name: "Car Loan Tracker", url: "https://akumeus04.github.io/pitaka-wallet/car/car_loan", emoji: "🚘" },
+    { name: "Happy Home Bills", url: "https://akumeus04.github.io/HappyHomeBills/",            emoji: "🏠" },
+    { name: "TimeIn - TimeOut", url: "https://akumeus04.github.io/Tools/TimeIn-TimeOut",       emoji: "⏱️" },
+    { name: "ToPDF & Merge",    url: "https://akumeus04.github.io/Tools/ToPDFnMerge",          emoji: "📄" }
 ];
 
 function renderGrid() {
@@ -416,12 +417,18 @@ function renderGrid() {
 
         const wrap = document.createElement('div');
         wrap.className = 'app-icon-wrap';
-        const img = document.createElement('img');
-        img.className = 'app-icon-img';
-        img.src = a.icon;
-        img.alt = '';
-        img.addEventListener('error', () => { wrap.textContent = a.emoji; });
-        wrap.appendChild(img);
+
+        // Check if a specific image icon is set; otherwise, use the emoji
+        if (a.icon) {
+            const img = document.createElement('img');
+            img.className = 'app-icon-img';
+            img.src = a.icon;
+            img.alt = '';
+            img.addEventListener('error', () => { wrap.textContent = a.emoji; });
+            wrap.appendChild(img);
+        } else {
+            wrap.textContent = a.emoji;
+        }
 
         const name = document.createElement('div');
         name.className = 'app-name';
