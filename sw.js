@@ -1,5 +1,5 @@
 // Apps Hub service worker — required for Android "Install app"
-const CACHE = 'apps-hub-v1';
+const CACHE = 'apps-hub-v2';
 const SHELL = ['./', './index.html', './manifest.json', './logo-192.png', './logo-512.png'];
 
 self.addEventListener('install', (event) => {
