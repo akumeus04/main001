@@ -8,7 +8,7 @@
     
     <!-- PWA Setup -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4F46E5">
+    <meta name="theme-color" content="#272727">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -16,7 +16,7 @@
     <link rel="apple-touch-icon" href="logo-192.png">
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Service Worker Registration -->
     <script>
@@ -33,74 +33,77 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --indigo:    #4F46E5;
-            --violet:    #7C3AED;
-            --slate-900: #0F172A;
-            --slate-800: #1E293B;
-            --slate-600: #475569;
-            --slate-400: #94A3B8;
-            --slate-200: #E2E8F0;
-            --slate-100: #F1F5F9;
-            --radius-sm: 10px;
-            --radius-lg: 24px;
-            --shadow-sm: 0 4px 12px rgba(15,23,42,0.06);
-            --shadow-md: 0 12px 24px rgba(15,23,42,0.1);
-            --shadow-violet: 0 8px 24px rgba(124,58,237,0.28);
+            --brand-red: #DA291C;
+            --brand-dark: #272727;
+            --bg-color: #f6f6f7;
+            --card-bg: #ffffff;
+            --text-main: #000000;
+            --text-muted: #888888;
+            --border-light: #e3e3e3;
+            --input-bg: #fafafa;
         }
 
         html, body { height: 100%; }
         body {
-            font-family: 'Inter', sans-serif;
-            background: #F0F4FF;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
             min-height: 100vh;
-            color: var(--slate-900);
         }
 
         button { font: inherit; }
 
-        /* ══ LOGIN SCREEN (Matches Reminder App) ══ */
+        /* ══ LOGIN SCREEN ══ */
         .login-overlay {
             position: fixed; inset: 0;
-            background: linear-gradient(160deg, var(--indigo) 0%, var(--violet) 50%, #9333EA 100%);
+            background: rgba(39, 39, 39, 0.95);
             display: flex; align-items: center; justify-content: center;
             z-index: 9999; padding: 24px;
         }
         .login-card {
-            background: rgba(255,255,255,0.97);
-            border-radius: var(--radius-lg); padding: 40px 32px;
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 40px 32px;
             width: 100%; max-width: 380px; text-align: center;
-            box-shadow: 0 32px 64px rgba(0,0,0,0.22);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             animation: loginPop 0.4s cubic-bezier(0.16,1,0.3,1);
         }
         @keyframes loginPop { from { opacity:0; transform:scale(0.92) translateY(16px); } to { opacity:1; transform:scale(1) translateY(0); } }
         
         .login-logo {
-            width: 64px; height: 64px; border-radius: 20px;
-            background: linear-gradient(135deg, var(--indigo), var(--violet));
+            width: 64px; height: 64px; border-radius: 16px;
+            background: var(--brand-red);
             display: flex; align-items: center; justify-content: center;
-            font-size: 30px; margin: 0 auto 20px; box-shadow: var(--shadow-violet);
+            font-size: 30px; margin: 0 auto 20px;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(218, 41, 28, 0.25);
         }
         .login-card h2 {
-            font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: 700;
-            color: var(--slate-900); margin-bottom: 6px;
+            font-weight: 700; font-size: 1.5rem;
+            color: var(--text-main); margin-bottom: 6px;
         }
-        .login-card p { font-size: 0.85rem; color: var(--slate-600); margin-bottom: 28px; }
+        .login-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 28px; }
         .login-error {
-            display: none; background: #FEF2F2; color: #DC2626;
-            padding: 12px 14px; border-radius: var(--radius-sm);
+            display: none; background: #FEF2F2; color: var(--brand-red);
+            padding: 12px 14px; border-radius: 12px;
             margin-bottom: 20px; font-size: 0.85rem; font-weight: 600;
-            border-left: 3px solid #DC2626; text-align: left;
+            border-left: 3px solid var(--brand-red); text-align: left;
         }
 
         .btn-login {
             width: 100%; padding: 14px; margin-top: 4px;
-            background: #ffffff; color: #3c4043; border: 1.5px solid var(--slate-200);
-            border-radius: var(--radius-sm); font-family: 'Poppins', sans-serif;
+            background: var(--input-bg); color: var(--text-main); 
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
             font-size: 0.95rem; font-weight: 600; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            box-shadow: var(--shadow-sm); transition: all 0.2s ease;
+            transition: all 0.2s ease;
         }
-        .btn-login:hover:not(:disabled) { background: var(--slate-100); transform: translateY(-1px); }
+        .btn-login:hover:not(:disabled) { 
+            background: #ffffff; 
+            border-color: var(--brand-red);
+            box-shadow: 0 0 0 3px rgba(218, 41, 28, 0.12);
+        }
         .btn-login:disabled { opacity: 0.65; cursor: not-allowed; }
 
         /* ══ MAIN HUB ══ */
@@ -110,31 +113,31 @@
 
         /* Hub Header */
         .hub-header {
-            background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
-            padding: 48px 24px 60px; position: relative; overflow: hidden;
-            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
-            box-shadow: var(--shadow-violet); margin-bottom: -30px;
+            background: var(--brand-dark);
+            padding: 48px 24px 60px; 
+            position: relative; overflow: hidden;
+            border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
+            margin-bottom: -30px;
         }
-        .hub-header::before, .hub-header::after {
-            content: ''; position: absolute; border-radius: 50%; background: rgba(255,255,255,0.08);
-        }
-        .hub-header::before { width: 250px; height: 250px; top: -80px; right: -50px; }
-        .hub-header::after  { width: 120px; height: 120px; bottom: -20px; left: -20px; }
-        
         .header-inner {
             display: flex; align-items: center; justify-content: space-between;
             position: relative; z-index: 1; max-width: 900px; margin: 0 auto;
         }
-        .header-title { font-family: 'Poppins', sans-serif; font-size: 1.6rem; font-weight: 700; color: #fff; }
-        .header-sub { font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-top: 2px; }
+        .header-title { font-size: 1.6rem; font-weight: 700; color: #ffffff; }
+        .header-sub { font-size: 0.9rem; color: #aaaaaa; margin-top: 2px; }
         
         .btn-logout {
             width: 44px; height: 44px; border-radius: 14px;
-            background: rgba(255,255,255,0.15); border: none; cursor: pointer;
-            font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
-            color: #fff; transition: background 0.2s; backdrop-filter: blur(8px);
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer; font-size: 1.2rem; 
+            display: flex; align-items: center; justify-content: center;
+            color: #ffffff; transition: background 0.2s, border-color 0.2s;
         }
-        .btn-logout:hover { background: rgba(255,255,255,0.25); }
+        .btn-logout:hover { 
+            background: rgba(218, 41, 28, 0.15); 
+            border-color: var(--brand-red); 
+        }
 
         /* Grid Layout */
         .hub-container {
@@ -148,26 +151,30 @@
 
         /* App Cards */
         .app-card {
-            background: #fff; border-radius: 20px; padding: 24px 16px;
-            text-align: center; text-decoration: none; color: var(--slate-800);
-            box-shadow: var(--shadow-sm); display: flex; flex-direction: column;
-            align-items: center; gap: 12px; border: 2px solid transparent;
+            background: var(--card-bg); border-radius: 18px; padding: 24px 16px;
+            text-align: center; text-decoration: none; color: var(--text-main);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); 
+            display: flex; flex-direction: column;
+            align-items: center; gap: 12px; border: 1px solid var(--border-light);
             transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
         }
         .app-card:hover {
-            transform: translateY(-4px); box-shadow: var(--shadow-md);
-            border-color: var(--indigo);
+            transform: translateY(-4px); 
+            box-shadow: 0 8px 24px rgba(218, 41, 28, 0.1);
+            border-color: var(--brand-red);
         }
         .app-icon-wrap {
-            width: 60px; height: 60px; border-radius: 16px;
-            background: var(--slate-100); display: flex; align-items: center;
-            justify-content: center; font-size: 32px; overflow: hidden;
+            width: 60px; height: 60px; border-radius: 14px;
+            background: var(--input-bg); border: 1px solid var(--border-light);
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 32px; overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .app-card:hover .app-icon-wrap {
+            border-color: var(--brand-red);
         }
         .app-icon-img { width: 100%; height: 100%; object-fit: cover; }
-        .app-name {
-            font-family: 'Poppins', sans-serif; font-size: 0.85rem;
-            font-weight: 600; line-height: 1.2;
-        }
+        .app-name { font-size: 0.85rem; font-weight: 600; line-height: 1.2; }
 
         @media (min-width: 600px) {
             .apps-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
@@ -221,7 +228,6 @@ const firebaseConfig = {
     apiKey: "AIzaSyAc46X6MIXI-moZ2oTy2ShiDv6IrjhVQC4",
     authDomain: "finance-app-23309.firebaseapp.com",
     projectId: "finance-app-23309",
-    // ... add any other missing config parameters here
 };
 
 const app  = initializeApp(firebaseConfig);
@@ -230,8 +236,6 @@ const auth = getAuth(app);
 // ==========================================
 // CENTRALIZED APPS LIST
 // ==========================================
-// To add a new app, simply copy a line and add your new URL and Icon/Emoji.
-// If you don't have a logo-512.png image file for an app yet, it will fall back to displaying the emoji!
 const APPS = [
     { name: "Pitaka Wallet",      url: "https://akumeus04.github.io/pitaka-wallet/#dashboard", icon: "logo-192.png", emoji: "👛" },
     { name: "Reminder",           url: "https://akumeus04.github.io/Tools/Reminder",           icon: "logo-192.png", emoji: "🚨" },
@@ -247,7 +251,6 @@ function renderGrid() {
     grid.innerHTML = APPS.map(app => `
         <a href="${app.url}" class="app-card">
             <div class="app-icon-wrap">
-                <!-- Tries to load the image. If it fails or is missing, uses the emoji -->
                 <img src="${app.icon}" class="app-icon-img" alt="${app.name}" onerror="this.outerHTML='${app.emoji}'">
             </div>
             <div class="app-name">${app.name}</div>
