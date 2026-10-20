@@ -75,6 +75,7 @@
             from { opacity: 0; transform: scale(0.92) translateY(16px); }
             to   { opacity: 1; transform: scale(1) translateY(0); }
         }
+/* ══ LOGIN LOGO (Mobile Default) ══ */
         .login-logo {
             width: 64px; height: 64px; border-radius: 16px;
             background: var(--brand-red);
@@ -82,9 +83,23 @@
             font-size: 30px; margin: 0 auto 20px;
             color: #ffffff;
             box-shadow: 0 4px 12px rgba(218, 41, 28, 0.25);
+            
+            /* Keeps current mobile speed */
             animation: float 3s ease-in-out infinite;
         }
-        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+        @keyframes float { 
+            0%, 100% { transform: translateY(0); } 
+            50%      { transform: translateY(-6px); } 
+        }
+
+        /* ══ DESKTOP SPECIFIC (Slower, Gentle Float) ══ */
+        @media (min-width: 600px) {
+            .login-logo {
+                /* Slowed down to 5.5s for smooth desktop monitors */
+                animation: float 5.5s ease-in-out infinite;
+            }
+        }
         .login-card h2 { font-weight: 700; font-size: 1.5rem; margin-bottom: 6px; }
         .login-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 28px; }
         .login-error {
@@ -297,7 +312,7 @@
 <div id="loginOverlay" class="login-overlay">
     <div class="login-card">
         <div class="login-logo">🚀</div>
-        <h2>Apps Hub</h2>
+        <h2>My Apps Hub</h2>
         <p>Sign in to access your tools</p>
         <div id="loginError" class="login-error"></div>
         <button type="button" id="googleLoginBtn" class="btn-login" onclick="window.handleGoogleLogin()">
@@ -312,12 +327,12 @@
     <div class="hub-header">
         <div class="header-inner">
             <div>
-                <div class="header-title">Welcome Back 👋</div>
-                <div class="header-sub">Select an app to continue</div>
+                <div class="header-title">Welcome Home 💻</div>
+                <div class="header-sub">Select an app</div>
             </div>
             <div class="header-actions">
-                <button type="button" class="btn-install" id="installBtn" title="Install app">⬇️ <span>Install</span></button>
-                <button type="button" class="btn-icon" onclick="window.logout()" title="Sign Out" aria-label="Sign out">🚪</button>
+                <button type="button" class="btn-install" id="installBtn" title="Install app">▶︎ <span>Install</span></button>
+                <button type="button" class="btn-icon" onclick="window.logout()" title="Sign Out" aria-label="Sign out">⛔</button>
             </div>
         </div>
     </div>
@@ -397,8 +412,8 @@ const auth = getAuth(app);
 // CENTRALIZED APPS LIST
 // ==========================================
 const APPS = [
-    { name: "Pitaka Wallet Desktop", url: "https://akumeus04.github.io/pitaka-wallet/#dashboard",   emoji: "👛" },
-	{ name: "Pitaka Wallet Mobile",  url: "https://akumeus04.github.io/pitaka-wallet/mobile.html#dashboard",   emoji: "👛" },
+    { name: "Pitaka Wallet Desktop", url: "https://akumeus04.github.io/pitaka-wallet/#dashboard",   emoji: "🌱" },
+	{ name: "Pitaka Wallet Mobile",  url: "https://akumeus04.github.io/pitaka-wallet/mobile.html#dashboard",   emoji: "🌱" },
     { name: "Reminder",         url: "https://akumeus04.github.io/Tools/Reminder",             emoji: "🚨" },
     { name: "Car Loan Tracker", url: "https://akumeus04.github.io/pitaka-wallet/car/car_loan", emoji: "🚘" },
     { name: "Happy Home Bills", url: "https://akumeus04.github.io/HappyHomeBills/",            emoji: "🏠" },
