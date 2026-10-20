@@ -75,7 +75,7 @@
             from { opacity: 0; transform: scale(0.92) translateY(16px); }
             to   { opacity: 1; transform: scale(1) translateY(0); }
         }
-/* ══ LOGIN LOGO (Mobile Default) ══ */
+/* ══ LOGIN LOGO (Base) ══ */
         .login-logo {
             width: 64px; height: 64px; border-radius: 16px;
             background: var(--brand-red);
@@ -84,20 +84,26 @@
             color: #ffffff;
             box-shadow: 0 4px 12px rgba(218, 41, 28, 0.25);
             
-            /* Keeps current mobile speed */
+            /* Enable sub-pixel hardware rendering */
+            will-change: transform;
+            transform: translateZ(0);
+            
+            /* Default Mobile timing */
             animation: float 3s ease-in-out infinite;
         }
 
+        /* Reduced vertical movement (only 4px) for a subtle float */
         @keyframes float { 
             0%, 100% { transform: translateY(0); } 
-            50%      { transform: translateY(-6px); } 
+            50%      { transform: translateY(-4px); } 
         }
 
-        /* ══ DESKTOP SPECIFIC (Slower, Gentle Float) ══ */
+        /* ══ DESKTOP OVERRIDE (Ultra-Slow Sine Wave) ══ */
         @media (min-width: 600px) {
             .login-logo {
-                /* Slowed down to 5.5s for smooth desktop monitors */
-                animation: float 5.5s ease-in-out infinite;
+                /* 8-second cycle with a soft sine easing curve */
+                animation-duration: 8s !important;
+                animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95) !important;
             }
         }
         .login-card h2 { font-weight: 700; font-size: 1.5rem; margin-bottom: 6px; }
